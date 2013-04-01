@@ -1,6 +1,10 @@
 DragSortListView
 ================
 
+Fork info
+---------
+Only forked to keep the support library at the same version as the rest of my projects
+
 News
 ----
 
