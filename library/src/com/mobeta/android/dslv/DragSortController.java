@@ -441,7 +441,11 @@ public class DragSortController extends SimpleFloatViewManager implements View.O
         // do nothing
     }
 
-    private GestureDetector.OnGestureListener mFlingRemoveListener =
+    public boolean isDragging() {
+		return mDragging;
+	}
+
+	private GestureDetector.OnGestureListener mFlingRemoveListener =
             new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public final boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,

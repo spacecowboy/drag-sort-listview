@@ -37,6 +37,7 @@ import android.util.SparseIntArray;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
@@ -56,7 +57,7 @@ import java.util.ArrayList;
  * @author heycosmo
  *
  */
-public class DragSortListView extends ListView {
+public class DragSortListView extends ListView implements OnTouchListener {
     
     
     /**
@@ -437,6 +438,10 @@ public class DragSortListView extends ListView {
 
     private boolean mUseRemoveVelocity;
     private float mRemoveVelocityX = 0;
+    
+    private DragSortController controller = null;
+
+	private OnTouchListener onTouchListener;
 
     public DragSortListView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -520,7 +525,7 @@ public class DragSortListView extends ListView {
                         R.styleable.DragSortListView_float_background_color,
                         Color.BLACK);
 
-                DragSortController controller = new DragSortController(
+                controller = new DragSortController(
                         this, dragHandleId, dragInitMode, removeMode,
                         clickRemoveId, flingHandleId);
                 controller.setRemoveEnabled(removeEnabled);
@@ -528,7 +533,7 @@ public class DragSortListView extends ListView {
                 controller.setBackgroundColor(bgColor);
 
                 mFloatViewManager = controller;
-                setOnTouchListener(controller);
+                super.setOnTouchListener(this);
             }
 
             a.recycle();
@@ -566,6 +571,21 @@ public class DragSortListView extends ListView {
                 cancel();
             }
         };
+    }
+    
+    @Override
+    public void setOnTouchListener(OnTouchListener tl) {
+    	onTouchListener = tl;
+    }
+    
+    @Override
+    public boolean onTouch(View v, MotionEvent ev) {
+    	// Only call listener if we are not dragging
+    	boolean result = controller.onTouch(v, ev);
+    	if (!controller.isDragging() && onTouchListener != null) {
+    		result |= onTouchListener.onTouch(v, ev);
+    	}
+    	return result;
     }
 
     /**
